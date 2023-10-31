@@ -2,11 +2,13 @@ public class Node {
     public int x, y; //Node coords on the grid
     public boolean isWall; //Check if node is wall or not
     public boolean isStart; //Check if node is wall or not
-    public boolean isFinish; //Check if node is wall or not
+    public boolean isFinish; //Check if node is finish or not
     public int gCost, hCost; //For A* -- gCost from start -- hCost heuristic from end
     public int fCost; //Total cost -- G + H
     public Node parent; //Stores path from start node to current node
-    public boolean isVisited;
+    public boolean isVisited; //If node has been visited yet
+
+    public int distance; //Distance to calculate for heuristic
 
     public Node(int x, int y){
         this.x = x;
@@ -15,6 +17,7 @@ public class Node {
         this.isStart = false;
         this.isFinish = false;
         this.isVisited = false;
+        this.distance = Integer.MAX_VALUE;
     }
 
     public Node(int x, int y, boolean isWall, boolean isStart, boolean isFinish, boolean isVisited){
@@ -24,6 +27,17 @@ public class Node {
         this.isStart = isStart;
         this.isFinish = isFinish;
         this.isVisited = isVisited;
+        this.distance = Integer.MAX_VALUE;
+    }
+
+    public Node(int x, int y, boolean isWall, boolean isStart, boolean isFinish, boolean isVisited, int distance){
+        this.x = x;
+        this.y = y;
+        this.isWall = isWall;
+        this.isStart = isStart;
+        this.isFinish = isFinish;
+        this.isVisited = isVisited;
+        this.distance = distance;
     }
 
     public void printNode(){
@@ -71,6 +85,10 @@ public class Node {
 
     //Calculate fCost
     public void calculateFCost(){
-        this.fCost = this.gCost + this.hCost;
+        fCost = gCost + hCost;
+    }
+
+    public int getFCost(){
+        return fCost;
     }
 }
