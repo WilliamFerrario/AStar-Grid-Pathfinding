@@ -1,17 +1,58 @@
 import java.util.*;
 
-public class Grid{
+public class Grid {
 
-    //Initial buttons set to false for game state
+    // Initialize Rows / Cols
+    public int rows = 80;
+    public int cols = 80;
+
+    // Frame Dimensions
+    int frameWidth = 1020;
+    int frameHeight = 810;
+
+    // Margins and Button Area
+    int buttonAreaWidth = 212; // width of button area
+    int leftMargin = buttonAreaWidth + 15; // width to start drawing squares
+    int verticalMargin = 12;
+    int rightMargin = 15;
+
+    // Calculate Available Grid Area
+    int availableWidth = frameWidth - leftMargin - rightMargin;
+    int availableHeight = frameHeight - 2 * verticalMargin; // Ensure equal top and bottom margins
+
+    // Calculate Cell Size, Grid Dimensions, and Offsets
+    int cellSize = Math.min(availableWidth / cols, availableHeight / rows);
+    int gridWidth = cellSize * cols;
+    int gridHeight = cellSize * rows;
+    int xOffset = leftMargin + (availableWidth - gridWidth) / 2;
+    int yOffset = ((availableHeight - gridHeight) / 2) - 7;
+
+    // Initialize Cell Padding
+    int cellPadding = cellSize / 6;
+
+    // Algo Playback Speed (in ms)
+    public int searchSpeed = 10;
+    public int pathSpeed = 20;
+
+    // Initial buttons set to false for game state
     public Node[][] nodes;
     public Node currentNode;
+    public Node startNode;
+    public Node endNode;
+
+    // Lists for BFS
     public LinkedList<Node> path = new LinkedList<Node>();
     public LinkedList<Node> finalPath = new LinkedList<Node>();
     public LinkedList<Node> neighborList = new LinkedList<Node>();
-    public Node startNode;
-    public Node endNode;
-    
-    //Initial flags for painting and setting grid state
+
+    // List for Dijkstra
+    PriorityQueue<Node> dijkstraPQ = new PriorityQueue<>();
+
+    // Lists for A*
+    public PriorityQueue<Node> oSet = new PriorityQueue<>();
+    public Set<Node> cSet = new HashSet<>();
+
+    // Initial flags for painting and setting grid state
     public boolean executePressed = false;
     public boolean executeHovered = false;
     public boolean startPressed = false;
@@ -22,38 +63,11 @@ public class Grid{
     public int cellHoveredX;
     public int cellHoveredY;
 
-    //Creating 20 x 20 game board arrays
-    //0 representing free space, 1 = walls
-    public int [][] gameBoard = 
-    {
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-        {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0},
-    };
+    // Creating game board array of 0
+    // 0 representing free space, 1 = walls
+    public int[][] gameBoard = new int[rows][cols];
 
-    public int [][] getBoard() {
+    public int[][] getBoard() {
         return gameBoard;
     }
 
@@ -61,14 +75,15 @@ public class Grid{
         return gameBoard[x][y];
     }
 
-    public void setBoard(int x, int y, int type){
+    public void setBoard(int x, int y, int type) {
         gameBoard[x][y] = type;
     }
 
     public void updateBoard(int x, int y) {
-        if(x == -1 || y == -1) return;
-    
-        if(startPressed || goalPressed) {
+        if (x == -1 || y == -1)
+            return;
+
+        if (startPressed || goalPressed) {
             setBoard(x, y, startPressed ? 2 : 3);
             startPressed = false;
             goalPressed = false;
@@ -76,16 +91,15 @@ public class Grid{
             toggleWall(x, y);
         }
     }
-    
+
     private void toggleWall(int x, int y) {
         setBoard(x, y, gameBoard[x][y] == 0 ? 1 : 0);
     }
 
-    public void execute(){
-        if (executePressed){
-            executePressed = true;
-            for (int i = 0; i < 25; i++){
-                for (int j = 0; j < 25; j++){
+    public void execute() {
+        if (executePressed) {
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
                     switch (gameBoard[i][j]) {
                         case 0:
                             nodes[i][j] = new Node(i, j, false, false, false, false);
@@ -103,22 +117,22 @@ public class Grid{
                             endNode = nodes[i][j];
                             break;
                     }
-                }    
+                }
             }
 
             executePressed = false;
-            //startBFS();
-            //startDijkstra();
+            // startBFS();
+            // startDijkstra();
             startAStar();
         }
     }
 
-    public void restartBoard(){
-        for (int i = 0; i < 25; i++){
-            for (int j = 0; j < 25; j++){
+    public void restartBoard() {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 gameBoard[i][j] = 0;
                 nodes[i][j] = new Node(i, j, false, false, false, false);
-                nodes[i][j].distance = Integer.MAX_VALUE;
+                nodes[i][j].gCost = Integer.MAX_VALUE;
             }
         }
         path.clear();
@@ -130,75 +144,70 @@ public class Grid{
         path.clear();
     }
 
-    //Empty Node instantiation
+    // Empty Node instantiation
     public Grid() {
-        nodes = new Node[25][25];
+        nodes = new Node[rows][cols];
         // Initialize the grid with empty nodes
-        for (int i = 0; i < 25; i++) {
-            for (int j = 0; j < 25; j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 nodes[i][j] = new Node(i, j);
             }
         }
     }
 
-    private void backtrackPath(Node goalNode){
+    private void backtrackPath(Node goalNode) {
         finalPath.clear();
         Node current = goalNode;
-        while(current != null){
+        while (current != null) {
             finalPath.addFirst(current);
             current = current.parent;
 
             try {
-                Thread.sleep(20); // sleep for 100 milliseconds
+                Thread.sleep(pathSpeed); // sleep for 100 milliseconds
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    //Calculate Manhattan Distance for A*
-    public int calculateManhattanDistance(Node nodeA, Node nodeB) {
-        return Math.abs(nodeA.x - nodeB.x) + Math.abs(nodeA.y - nodeB.y);
-    }
-
-    //Get Neighbors from current node
-    public List<Node> getNeighbors(Node node){
+    // Get Neighbors from current node
+    public List<Node> getNeighbors(Node node) {
         List<Node> neighbors = new ArrayList<>();
         neighborList.clear();
 
         int x = node.getX();
         int y = node.getY();
 
-        if(x + 1 < 25 && !nodes[x + 1][y].isWall()){
+        if (x + 1 < rows && !nodes[x + 1][y].isWall()) {
             neighbors.add(nodes[x + 1][y]);
             neighborList.add(nodes[x + 1][y]);
         }
 
-        if(x - 1 >= 0 && !nodes[x - 1][y].isWall()){
+        if (x - 1 >= 0 && !nodes[x - 1][y].isWall()) {
             neighbors.add(nodes[x - 1][y]);
             neighborList.add(nodes[x - 1][y]);
         }
 
-        if(y + 1 < 25 && !nodes[x][y + 1].isWall()){
+        if (y + 1 < cols && !nodes[x][y + 1].isWall()) {
             neighbors.add(nodes[x][y + 1]);
             neighborList.add(nodes[x][y + 1]);
         }
 
-        if(y - 1 >= 0 && !nodes[x][y - 1].isWall()){
+        if (y - 1 >= 0 && !nodes[x][y - 1].isWall()) {
             neighbors.add(nodes[x][y - 1]);
             neighborList.add(nodes[x][y - 1]);
         }
-        
+
         return neighbors;
     }
 
-    //BFS Method HERE
-    public void BFS(){
+    // BFS Method HERE
+    public void BFS() {
 
-        while(!path.isEmpty()){
+        while (!path.isEmpty()) {
             currentNode = path.poll();
 
-            if(currentNode.isGoal()){
+            if (currentNode.isGoal()) {
                 backtrackPath(currentNode);
                 break;
             } else {
@@ -214,25 +223,25 @@ public class Grid{
             }
 
             try {
-                Thread.sleep(10); // sleep for 100 milliseconds
+                Thread.sleep(searchSpeed); // sleep
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    //Dijkstra's Algorithm
-    public void dijkstra(){
-        PriorityQueue <Node> pq = new PriorityQueue<>(Comparator.comparingInt(n -> n.distance));
+    // Dijkstra's Algorithm
+    public void dijkstra() {
+        PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingInt(n -> n.gCost));
 
-        if (startNode != null){
-            startNode.distance = 0;
+        if (startNode != null) {
+            startNode.gCost = 0;
             pq.add(startNode);
 
-            while (!pq.isEmpty()){
+            while (!pq.isEmpty()) {
                 Node currentNode = pq.poll();
 
-                if(currentNode.isFinish){
+                if (currentNode.isFinish) {
                     backtrackPath(currentNode);
                     return;
                 }
@@ -240,19 +249,23 @@ public class Grid{
                 List<Node> neighbors = getNeighbors(currentNode);
                 for (Node neighbor : neighbors) {
                     if (!neighbor.isVisited()) {
-                        int newDistance = currentNode.distance + 1; //Change in future for weighted edges
-                        if (newDistance < neighbor.distance){
-                            neighbor.distance = newDistance;
+                        int newDistance = currentNode.gCost + 1; // Change in future for weighted edges
+                        if (newDistance < neighbor.gCost) {
+                            neighbor.gCost = newDistance;
                             neighbor.parent = currentNode;
                             pq.add(neighbor);
                         }
                     }
                 }
 
+                // Update outside PQ
+                dijkstraPQ = pq;
+
+                // Set Current to true
                 currentNode.isVisited = true;
 
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(searchSpeed);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -260,48 +273,60 @@ public class Grid{
         }
     }
 
-    //AStar Algorithm
+    // Calculate Manhattan Distance for A*
+    public int calculateManhattanDistance(Node nodeA, Node nodeB) {
+        return Math.abs(nodeA.x - nodeB.x) + Math.abs(nodeA.y - nodeB.y);
+    }
+
+    // AStar Algorithm
     public void aStar() {
-        System.out.println("ASTAR");
+
+        // Sets for current execution
         PriorityQueue<Node> openSet = new PriorityQueue<>(Comparator.comparingInt(n -> n.getFCost()));
         Set<Node> closedSet = new HashSet<>();
-    
+
         startNode.gCost = 0;
         startNode.hCost = calculateManhattanDistance(startNode, endNode);
         openSet.add(startNode);
-    
+
         while (!openSet.isEmpty()) {
             Node currentNode = openSet.poll();
-            
+
             if (currentNode.equals(endNode)) {
                 backtrackPath(currentNode);
                 return;
             }
-    
+
             closedSet.add(currentNode);
-    
+
             for (Node neighbor : getNeighbors(currentNode)) {
-                if (closedSet.contains(neighbor) || neighbor.isWall()) continue;
-                
+                if (closedSet.contains(neighbor) || neighbor.isWall())
+                    continue;
+
                 int tentativeGCost = currentNode.gCost + 1; // Assume cost is 1 for all edges
                 if (tentativeGCost < neighbor.gCost) {
                     neighbor.parent = currentNode;
                     neighbor.gCost = tentativeGCost;
                     neighbor.hCost = calculateManhattanDistance(neighbor, endNode);
-                    
-                    if (!openSet.contains(neighbor)) {
-                        openSet.add(neighbor);
-                    }
+
+                    openSet.remove(neighbor);
+                    openSet.add(neighbor);
                 }
             }
-    
+
+            // Update outside sets
+            oSet = openSet;
+            cSet = closedSet;
+
             try {
-                Thread.sleep(10);
+                Thread.sleep(searchSpeed);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
     }
+
+    // TODO -- no individual threads per algo
 
     public void startBFS() {
         new Thread(this::BFS).start();
@@ -316,4 +341,4 @@ public class Grid{
     }
 }
 
-//Potentially add Diagonal Movement instead of Axial
+// Potentially add Diagonal Movement instead of Axial
