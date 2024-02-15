@@ -60,6 +60,17 @@ public class Grid {
     public boolean goalPressed = false;
     public boolean goalHovered = false;
     public boolean resetHovered = false;
+
+    //Algo Buttons
+    public boolean BFSPressed = false;
+    public boolean BFSHovered = false;
+
+    public boolean DPressed = false;
+    public boolean DHovered = false;
+
+    public boolean AstarPressed = false;
+    public boolean AstarHovered = false;
+    
     public int cellHoveredX;
     public int cellHoveredY;
 
@@ -121,9 +132,19 @@ public class Grid {
             }
 
             executePressed = false;
-            // startBFS();
-            // startDijkstra();
-            startAStar();
+
+            if(BFSPressed){
+                System.out.println("BFS Starting");
+                startBFS();
+            }
+            if(DPressed){
+                System.out.println("DIJKSTRA Starting");
+                startDijkstra();
+            }
+            if(AstarPressed){
+                System.out.println("ASTAR Starting");
+                startAStar();
+            }
         }
     }
 
@@ -232,8 +253,11 @@ public class Grid {
 
     // Dijkstra's Algorithm
     public void dijkstra() {
+
         PriorityQueue<Node> pq = new PriorityQueue<>(Comparator.comparingInt(n -> n.gCost));
 
+        //Resetting nodes
+        
         if (startNode != null) {
             startNode.gCost = 0;
             pq.add(startNode);

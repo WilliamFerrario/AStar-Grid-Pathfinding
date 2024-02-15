@@ -29,7 +29,7 @@ public class MouseEvents implements MouseInputListener {
             grid.updateBoard(mouseCellX, mouseCellY);
         }
 
-        // execute button
+        // execute button press
         if (mouseX >= 15 && mouseX < 228 && mouseY >= 15 && mouseY < 98) {
             grid.executePressed = !grid.executePressed; // Toggle the value
             grid.startPressed = false;
@@ -40,7 +40,7 @@ public class MouseEvents implements MouseInputListener {
             }
         }
 
-        // reset button
+        // reset button press
         if (mouseX >= 15 && mouseX < 228 && mouseY >= 105 && mouseY < 188) {
             grid.restartBoard();
             grid.executePressed = false;
@@ -48,7 +48,7 @@ public class MouseEvents implements MouseInputListener {
             grid.goalPressed = false;
         }
 
-        // start button
+        // start button press
         if (mouseX >= 15 && mouseX < 228 && mouseY >= 195 && mouseY < 278) {
             grid.startPressed = !grid.startPressed; // Toggle the value
             if (grid.startPressed) { // If start is now true, set goal to false
@@ -57,13 +57,34 @@ public class MouseEvents implements MouseInputListener {
             grid.executePressed = false;
         }
 
-        // goal button
+        // goal button press
         if (mouseX >= 15 && mouseX < 228 && mouseY >= 285 && mouseY < 368) {
             grid.goalPressed = !grid.goalPressed; // Toggle the value
             if (grid.goalPressed) { // If goal is now true, set start to false
                 grid.startPressed = false;
             }
             grid.executePressed = false;
+        }
+
+        // BFS button press
+        if (mouseX >= 15 && mouseX < 15 + 65 && mouseY >= 375 && mouseY < 375 + 60) {
+            grid.BFSPressed = !grid.BFSPressed; // Toggle the value
+            grid.DPressed = false; // Reset others
+            grid.AstarPressed = false;
+        }
+
+        // Dijkstra button press
+        if (mouseX >= 89 && mouseX < 89 + 65 && mouseY >= 375 && mouseY < 375 + 60) {
+            grid.DPressed = !grid.DPressed; // Toggle the value 
+            grid.BFSPressed = false; // Reset others
+            grid.AstarPressed = false;
+        }
+
+        // A* button press
+        if (mouseX >= 162 && mouseX < 162 + 65 && mouseY >= 375 && mouseY < 375 + 60) {
+            grid.AstarPressed = !grid.AstarPressed; // Toggle the value
+            grid.BFSPressed = false; // Reset others
+            grid.DPressed = false;
         }
     }
 
@@ -102,6 +123,27 @@ public class MouseEvents implements MouseInputListener {
             grid.goalHovered = false;
         }
 
+        // BFS button 
+        if (mouseX >= 15 && mouseX < 15 + 65 && mouseY >= 375 && mouseY < 375 + 60) {
+            grid.BFSHovered = true;
+        } else {
+            grid.BFSHovered = false;
+        }
+
+        // Dijkstra button 
+        if (mouseX >= 89 && mouseX < 89 + 65 && mouseY >= 375 && mouseY < 375 + 60) {
+            grid.DHovered = true;
+        } else {
+            grid.DHovered = false;
+        }
+
+        // A* button 
+        if (mouseX >= 162 && mouseX < 162 + 65 && mouseY >= 375 && mouseY < 375 + 60) {
+            grid.AstarHovered = true;
+        } else {
+            grid.AstarHovered = false;
+        }
+
         // Cell hovering
         grid.cellHoveredX = mouseCellX;
         grid.cellHoveredY = mouseCellY;
@@ -120,22 +162,31 @@ public class MouseEvents implements MouseInputListener {
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        mouseCellX = inCellX(mouseX, mouseY);
-        mouseCellY = inCellY(mouseX, mouseY);
-        int val = grid.getBoardVal(mouseCellX, mouseCellY);
 
-        if (mouseDown) {
-            grid.updateBoard(mouseCellX, mouseCellY);
-            mouseX = e.getX();
-            mouseY = e.getY();
-            mouseCellX = inCellX(mouseX, mouseY);
-            mouseCellY = inCellY(mouseX, mouseY);
+        try{
 
-            // Drag to change values of cells opposite of initial click
-            if (val != grid.getBoardVal(mouseCellX, mouseCellY)) {
+            if (mouseDown && (mouseCellX != -1 && mouseCellY != -1)) {
+                //make sure cell selection is in a valid spot to prevent IndexOOB
+
+                int val = grid.getBoardVal(mouseCellX, mouseCellY);
                 grid.updateBoard(mouseCellX, mouseCellY);
+                mouseX = e.getX();
+                mouseY = e.getY();
+                mouseCellX = inCellX(mouseX, mouseY);
+                mouseCellY = inCellY(mouseX, mouseY);
+
+                // Drag to change values of cells opposite of initial click
+                if (val != grid.getBoardVal(mouseCellX, mouseCellY)) {
+                    grid.updateBoard(mouseCellX, mouseCellY);
+                }
             }
         }
+
+        catch (ArrayIndexOutOfBoundsException exception){
+            // System.out.println("mouseX" + mouseCellX);
+            // System.out.println("mouseY" + mouseCellY);
+        }
+
     }
 
     @Override

@@ -36,7 +36,7 @@ public class PaintBoard extends JPanel {
         }
         g.fillRect(15, 15, 212, 84);
 
-        // Text
+        // Exe Text
         g.setColor(Color.WHITE);
         g.drawString("Execute", 80, 65);
 
@@ -48,7 +48,7 @@ public class PaintBoard extends JPanel {
             g.fillRect(15, 105, 212, 84);
         }
 
-        // Text
+        // Reset Text
         g.setColor(Color.WHITE);
         g.drawString("Reset", 90, 155);
 
@@ -65,7 +65,7 @@ public class PaintBoard extends JPanel {
             g.setColor(hoveredDark);
         }
 
-        // Text
+        // Start Text
         g.setColor(Color.WHITE);
         g.drawString("Start", 90, 245);
 
@@ -82,9 +82,64 @@ public class PaintBoard extends JPanel {
             g.setColor(hoveredDark);
         }
 
-        // Text
+        // Goal Text
         g.setColor(Color.WHITE);
         g.drawString("Goal", 90, 335);
+
+        // Small Button Font
+        Font smallFont = new Font("SansSerif", Font.PLAIN, 12);
+        g.setFont(smallFont);
+
+        // BFS button
+        g.setColor(fgDark);
+        g.fillRect(15, 375, 65, 60);
+        if (grid.BFSHovered) {
+            g.setColor(hoveredDark);
+            g.fillRect(15, 375, 65, 60);
+        }
+        if (grid.BFSPressed) {
+            g.setColor(mutedGreen);
+            g.fillRect(15, 375, 65, 60);
+            g.setColor(hoveredDark);
+        }
+
+        // BFS button text
+        g.setColor(Color.WHITE); // Set text color
+        g.drawString("BFS", 15 + (65 / 2) - (g.getFontMetrics().stringWidth("BFS") / 2), 375 + (60 / 2) + (g.getFontMetrics().getAscent() / 2) - 3);
+
+        // DIJKSTRA button
+        g.setColor(fgDark);
+        g.fillRect(89, 375, 65, 60);
+        if (grid.DHovered) {
+            g.setColor(hoveredDark);
+            g.fillRect(89, 375, 65, 60);
+        }
+        if (grid.DPressed) {
+            g.setColor(mutedGreen);
+            g.fillRect(89, 375, 65, 60);
+            g.setColor(hoveredDark);
+        }
+
+        // Dijkstra button text
+        g.setColor(Color.WHITE); // Set text color
+        g.drawString("Dijkstra's", 89 + (65 / 2) - (g.getFontMetrics().stringWidth("Dijkstra's") / 2), 375 + (60 / 2) + (g.getFontMetrics().getAscent() / 2) - 3);
+
+        // Astar button
+        g.setColor(fgDark);
+        g.fillRect(162, 375, 65, 60);
+        if (grid.AstarHovered) {
+            g.setColor(hoveredDark);
+            g.fillRect(162, 375, 65, 60);
+        }
+        if (grid.AstarPressed) {
+            g.setColor(mutedGreen);
+            g.fillRect(162, 375, 65, 60);
+            g.setColor(hoveredDark);
+        }
+
+        // Astar button text
+        g.setColor(Color.WHITE); // Set text color
+        g.drawString("A*", 162 + (65 / 2) - (g.getFontMetrics().stringWidth("A*") / 2), 375 + (60 / 2) + (g.getFontMetrics().getAscent() / 2) - 3);
 
         // Draw Cells
         for (int i = 0; i < grid.cols; i++) {
