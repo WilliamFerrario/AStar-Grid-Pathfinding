@@ -141,6 +141,55 @@ public class PaintBoard extends JPanel {
         g.setColor(Color.WHITE); // Set text color
         g.drawString("A*", 162 + (65 / 2) - (g.getFontMetrics().stringWidth("A*") / 2), 375 + (60 / 2) + (g.getFontMetrics().getAscent() / 2) - 3);
 
+        //Size Selector
+        g.setColor(fgDark);
+        g.fillRect(15, 442, 212, 30);
+
+        //Size Selector handle
+        g.setColor(mutedGrey);
+        g.fillRect(grid.sizeSelectorValue, 442, 10, 30);
+        if (grid.sizeSelectorHovered) {
+            g.setColor(hoveredDark);
+            g.fillRect(grid.sizeSelectorValue, 442, 10, 30);
+        }
+
+        // Size selector text
+        g.setColor(Color.WHITE); // Set text color
+        g.drawString("Grid Size", 15 + (212 / 2) - (g.getFontMetrics().stringWidth("Grid Size") / 2), 460);
+
+        //Search Speed Selector
+        g.setColor(fgDark);
+        g.fillRect(15, 480, 212, 30);
+
+        //Search speed handle
+        g.setColor(mutedGrey);
+        g.fillRect(grid.searchSpeedValue, 480, 10, 30);
+        if (grid.searchSpeedHovered) {
+            g.setColor(hoveredDark);
+            g.fillRect(grid.searchSpeedValue, 480, 10, 30);
+        }
+
+        // Search text
+        //g.setColor(Color.WHITE); // Set text color
+        //g.drawString("Search Speed", 15 + (212 / 2) - (g.getFontMetrics().stringWidth("Search Speed") / 2), 480);
+
+        //Path Speed Selector
+        g.setColor(fgDark);
+        g.fillRect(15, 522, 212, 30);
+
+        //Path speed handle
+        g.setColor(mutedGrey);
+        g.fillRect(grid.pathSpeedValue, 522, 10, 30);
+        if (grid.pathSpeedHovered) {
+            g.setColor(hoveredDark);
+            g.fillRect(grid.pathSpeedValue, 522, 10, 30);
+        }
+
+        // Path text
+        //g.setColor(Color.WHITE); // Set text color
+        //g.drawString("Path Speed", 15 + (212 / 2) - (g.getFontMetrics().stringWidth("Path Speed") / 2), 480);
+
+
         // Draw Cells
         for (int i = 0; i < grid.cols; i++) {
             for (int j = 0; j < grid.rows; j++) {
@@ -202,9 +251,13 @@ public class PaintBoard extends JPanel {
                     g.setColor(Color.blue);
                 }
 
+                // Paint general color for cell
                 g.fillRect(grid.xOffset + (grid.cellPadding + i * grid.cellSize),
                         grid.yOffset + grid.cellPadding + j * grid.cellSize, grid.cellSize - 2 * grid.cellPadding,
                         grid.cellSize - 2 * grid.cellPadding);
+
+
+                // Paint size selector handle
 
             }
         }

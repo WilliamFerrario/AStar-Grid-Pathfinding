@@ -3,8 +3,8 @@ import java.util.*;
 public class Grid {
 
     // Initialize Rows / Cols
-    public int rows = 80;
-    public int cols = 80;
+    public int rows = 100;
+    public int cols = 100;
 
     // Frame Dimensions
     int frameWidth = 1020;
@@ -15,6 +15,16 @@ public class Grid {
     int leftMargin = buttonAreaWidth + 15; // width to start drawing squares
     int verticalMargin = 12;
     int rightMargin = 15;
+
+    //Selector Values
+    public boolean sizeSelectorHovered = false;
+    public int sizeSelectorValue = 110;
+
+    public boolean searchSpeedHovered = false;
+    public int searchSpeedValue = 10;
+
+    public boolean pathSpeedHovered = false;
+    public int pathSpeedValue = 20;
 
     // Calculate Available Grid Area
     int availableWidth = frameWidth - leftMargin - rightMargin;
@@ -146,6 +156,80 @@ public class Grid {
                 startAStar();
             }
         }
+    }
+
+    public void updateDimensions(int dimensions) {
+
+        //update with dimensions to ensure
+        this.sizeSelectorValue = dimensions;
+        
+        // Map sliderPosition to rows and cols
+        this.rows = sizeSelectorValue;
+        this.cols = sizeSelectorValue;
+
+        // Margins and Button Area
+        this.buttonAreaWidth = 212; // width of button area
+        this.leftMargin = buttonAreaWidth + 15; // width to start drawing squares
+        this.verticalMargin = 12;
+        this.rightMargin = 15;
+
+        // this.searchSpeed = searchSpeed / 5;
+        // this.pathSpeed = pathSpeed / 5;
+
+
+        // Calculate Available Grid Area
+        this.availableWidth = frameWidth - leftMargin - rightMargin;
+        this.availableHeight = frameHeight - 2 * verticalMargin; // Ensure equal top and bottom margins
+
+        //Calculate Cell Size, Grid Dimensions, and Offsets
+        this.cellSize = Math.min(availableWidth / cols, availableHeight / rows);
+        this.gridWidth = cellSize * cols;
+        this.gridHeight = cellSize * rows;
+        this.xOffset = leftMargin + (availableWidth - gridWidth) / 2;
+        this.yOffset = ((availableHeight - gridHeight) / 2) - 7;
+
+        System.out.println(this.searchSpeed);
+        System.out.println(this.pathSpeed);
+        //Update arrays to match dimensions
+        resizeGrid();
+
+
+        restartBoard(); // Reset grid with new dimensions
+    }
+
+    public void setSearchSpeed(int speed) {
+        this.searchSpeed = 46 - (speed / 5);
+        System.out.println(this.searchSpeed);
+        
+    }
+    
+    public void setPathSpeed(int speed) {
+        this.pathSpeed = 46 - (speed / 5);
+        System.out.println(this.pathSpeed);
+    }
+
+    private void resizeGrid() {
+        // Create new game board and nodes arrays with updated dimensions
+        int[][] newGameBoard = new int[rows][cols];
+        Node[][] newNodes = new Node[rows][cols];
+
+        // Initialize newGameBoard with 0 (free space)
+        for (int i = 0; i < rows; i++) {
+            Arrays.fill(newGameBoard[i], 0); // Fill each row with 0
+        }
+
+        // Populate newNodes with fresh Node instances
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                newNodes[i][j] = new Node(i, j, false, false, false, false);
+                // Set gCost to Integer.MAX_VALUE as in restartBoard method
+                newNodes[i][j].gCost = Integer.MAX_VALUE;
+            }
+        }
+
+        // Replace old arrays with newly created ones
+        gameBoard = newGameBoard;
+        nodes = newNodes;
     }
 
     public void restartBoard() {

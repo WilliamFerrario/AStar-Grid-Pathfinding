@@ -14,8 +14,12 @@ public class MouseEvents implements MouseInputListener {
     public int mouseY;
     public int mouseCellX;
     public int mouseCellY;
+    public int size;
+    public int searchSpeed;
+    public int pathSpeed;
     public boolean mouseDown;
     public boolean mouseUp;
+    public int mod;
 
     @Override
     public void mouseClicked(MouseEvent e) {
@@ -144,6 +148,30 @@ public class MouseEvents implements MouseInputListener {
             grid.AstarHovered = false;
         }
 
+        // Size Selector Hover
+        if (mouseX >= 15 && mouseX <= 227 && mouseY >= 442 && mouseY <= 472) {
+            grid.sizeSelectorHovered = true;
+
+        } else {
+            grid.sizeSelectorHovered = false;
+        }
+
+        // Search Selector Hover
+        if (mouseX >= 15 && mouseX <= 227 && mouseY >= 480 && mouseY <= 510) {
+            grid.searchSpeedHovered = true;
+
+        } else {
+            grid.searchSpeedHovered = false;
+        }
+
+        // Path Selector Hover
+        if (mouseX >= 15 && mouseX <= 227 && mouseY >= 522 && mouseY <= 552) {
+            grid.pathSpeedHovered = true;
+
+        } else {
+            grid.pathSpeedHovered = false;
+        }
+
         // Cell hovering
         grid.cellHoveredX = mouseCellX;
         grid.cellHoveredY = mouseCellY;
@@ -185,6 +213,57 @@ public class MouseEvents implements MouseInputListener {
         catch (ArrayIndexOutOfBoundsException exception){
             // System.out.println("mouseX" + mouseCellX);
             // System.out.println("mouseY" + mouseCellY);
+        }
+
+        //System.out.println(mouseX);
+
+        // Size Selector Mouse Events
+        if (grid.sizeSelectorHovered && mouseDown) {
+
+            mouseX = e.getX();
+            mouseY = e.getY();
+
+            //10 - 220 px for mouse limits
+            mod = mouseX % 10;
+            grid.sizeSelectorValue = mouseX - mod;
+            grid.sizeSelectorValue = Math.max(grid.sizeSelectorValue, 10);
+            grid.sizeSelectorValue = Math.min(grid.sizeSelectorValue, 226);
+            
+            //Update
+            //grid.updateDimensions(grid.sizeSelectorValue, grid.searchSpeedValue, grid.pathSpeedValue);
+            grid.updateDimensions(grid.sizeSelectorValue);
+        }
+
+        // Search Selector Mouse Events
+        if (grid.searchSpeedHovered && mouseDown) {
+
+            mouseX = e.getX();
+            mouseY = e.getY();
+
+            //mouse limits
+            grid.searchSpeedValue = mouseX;
+            grid.searchSpeedValue = Math.max(grid.searchSpeedValue, 10);
+            grid.searchSpeedValue = Math.min(grid.searchSpeedValue, 226);
+            
+            //Update
+            //grid.updateDimensions(grid.sizeSelectorValue, grid.searchSpeedValue, grid.pathSpeedValue);
+            grid.setSearchSpeed(grid.searchSpeedValue);
+        }
+
+        // Path Selector Mouse Events
+        if (grid.pathSpeedHovered && mouseDown) {
+
+            mouseX = e.getX();
+            mouseY = e.getY();
+
+            //mouse limits
+            grid.pathSpeedValue = mouseX;
+            grid.pathSpeedValue = Math.max(grid.pathSpeedValue, 10);
+            grid.pathSpeedValue = Math.min(grid.pathSpeedValue, 226);
+            
+            //Update
+            //grid.updateDimensions(grid.sizeSelectorValue, grid.searchSpeedValue, grid.pathSpeedValue);
+            grid.setPathSpeed(grid.pathSpeedValue);
         }
 
     }
