@@ -227,10 +227,9 @@ public class MouseEvents implements MouseInputListener {
             mod = mouseX % 10;
             grid.sizeSelectorValue = mouseX - mod;
             grid.sizeSelectorValue = Math.max(grid.sizeSelectorValue, 10);
-            grid.sizeSelectorValue = Math.min(grid.sizeSelectorValue, 226);
+            grid.sizeSelectorValue = Math.min(grid.sizeSelectorValue, 225);
             
             //Update
-            //grid.updateDimensions(grid.sizeSelectorValue, grid.searchSpeedValue, grid.pathSpeedValue);
             grid.updateDimensions(grid.sizeSelectorValue);
         }
 
@@ -243,10 +242,9 @@ public class MouseEvents implements MouseInputListener {
             //mouse limits
             grid.searchSpeedValue = mouseX;
             grid.searchSpeedValue = Math.max(grid.searchSpeedValue, 10);
-            grid.searchSpeedValue = Math.min(grid.searchSpeedValue, 226);
+            grid.searchSpeedValue = Math.min(grid.searchSpeedValue, 225);
             
             //Update
-            //grid.updateDimensions(grid.sizeSelectorValue, grid.searchSpeedValue, grid.pathSpeedValue);
             grid.setSearchSpeed(grid.searchSpeedValue);
         }
 
@@ -259,10 +257,9 @@ public class MouseEvents implements MouseInputListener {
             //mouse limits
             grid.pathSpeedValue = mouseX;
             grid.pathSpeedValue = Math.max(grid.pathSpeedValue, 10);
-            grid.pathSpeedValue = Math.min(grid.pathSpeedValue, 226);
+            grid.pathSpeedValue = Math.min(grid.pathSpeedValue, 225);
             
             //Update
-            //grid.updateDimensions(grid.sizeSelectorValue, grid.searchSpeedValue, grid.pathSpeedValue);
             grid.setPathSpeed(grid.pathSpeedValue);
         }
 

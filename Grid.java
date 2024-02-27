@@ -21,10 +21,10 @@ public class Grid {
     public int sizeSelectorValue = 110;
 
     public boolean searchSpeedHovered = false;
-    public int searchSpeedValue = 10;
+    public int searchSpeedValue = 25;
 
     public boolean pathSpeedHovered = false;
-    public int pathSpeedValue = 20;
+    public int pathSpeedValue = 25;
 
     // Calculate Available Grid Area
     int availableWidth = frameWidth - leftMargin - rightMargin;
@@ -41,8 +41,8 @@ public class Grid {
     int cellPadding = cellSize / 6;
 
     // Algo Playback Speed (in ms)
-    public int searchSpeed = 10;
-    public int pathSpeed = 20;
+    public int searchSpeed = 25;
+    public int pathSpeed = 25;
 
     // Initial buttons set to false for game state
     public Node[][] nodes;
@@ -188,8 +188,8 @@ public class Grid {
         this.xOffset = leftMargin + (availableWidth - gridWidth) / 2;
         this.yOffset = ((availableHeight - gridHeight) / 2) - 7;
 
-        System.out.println(this.searchSpeed);
-        System.out.println(this.pathSpeed);
+        //System.out.println(this.searchSpeed);
+        //System.out.println(this.pathSpeed);
         //Update arrays to match dimensions
         resizeGrid();
 
@@ -197,15 +197,17 @@ public class Grid {
         restartBoard(); // Reset grid with new dimensions
     }
 
+    // Method to set search speed dynamically
     public void setSearchSpeed(int speed) {
-        this.searchSpeed = 46 - (speed / 5);
-        System.out.println(this.searchSpeed);
+        this.searchSpeed = (46 - (speed / 5)) * 2;
+        //System.out.println(this.searchSpeed);
         
     }
     
+    // Method to set path trace speed dynamically
     public void setPathSpeed(int speed) {
-        this.pathSpeed = 46 - (speed / 5);
-        System.out.println(this.pathSpeed);
+        this.pathSpeed = (46 - (speed / 5)) * 3;
+        //System.out.println(this.pathSpeed);
     }
 
     private void resizeGrid() {

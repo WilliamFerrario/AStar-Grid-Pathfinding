@@ -155,7 +155,8 @@ public class PaintBoard extends JPanel {
 
         // Size selector text
         g.setColor(Color.WHITE); // Set text color
-        g.drawString("Grid Size", 15 + (212 / 2) - (g.getFontMetrics().stringWidth("Grid Size") / 2), 460);
+        String sizeText = "Grid Size: " + grid.sizeSelectorValue; // Get actual value of size selector
+        g.drawString(sizeText, 15 + (212 / 2) - (g.getFontMetrics().stringWidth(sizeText) / 2), 460);
 
         //Search Speed Selector
         g.setColor(fgDark);
@@ -170,8 +171,9 @@ public class PaintBoard extends JPanel {
         }
 
         // Search text
-        //g.setColor(Color.WHITE); // Set text color
-        //g.drawString("Search Speed", 15 + (212 / 2) - (g.getFontMetrics().stringWidth("Search Speed") / 2), 480);
+        g.setColor(Color.WHITE); // Set text color
+        String searchSpeedText = "Search Speed: " + grid.searchSpeedValue; // Get actual value of search speed selector
+        g.drawString(searchSpeedText, 15 + (212 / 2) - (g.getFontMetrics().stringWidth(searchSpeedText) / 2), 498);
 
         //Path Speed Selector
         g.setColor(fgDark);
@@ -186,8 +188,9 @@ public class PaintBoard extends JPanel {
         }
 
         // Path text
-        //g.setColor(Color.WHITE); // Set text color
-        //g.drawString("Path Speed", 15 + (212 / 2) - (g.getFontMetrics().stringWidth("Path Speed") / 2), 480);
+        g.setColor(Color.WHITE); // Set text color
+        String pathSpeedText = "Path Speed: " + grid.pathSpeedValue; // Get actual value of path speed selector
+        g.drawString(pathSpeedText, 15 + (212 / 2) - (g.getFontMetrics().stringWidth(pathSpeedText) / 2), 540);
 
 
         // Draw Cells
@@ -256,14 +259,11 @@ public class PaintBoard extends JPanel {
                         grid.yOffset + grid.cellPadding + j * grid.cellSize, grid.cellSize - 2 * grid.cellPadding,
                         grid.cellSize - 2 * grid.cellPadding);
 
-
-                // Paint size selector handle
-
             }
         }
     }
 }
 
-// for two destinations...
+// TODO for two destinations...
 // if val of <1 ... recall alg
 // from first initial goal to other set goal
