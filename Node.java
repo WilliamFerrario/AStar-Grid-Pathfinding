@@ -7,6 +7,7 @@ public class Node {
     public int fCost; // Total cost -- G + H
     public Node parent; // Stores path from start node to current node
     public boolean isVisited; // If node has been visited yet
+    
 
     public Node(int x, int y) {
         this.x = x;

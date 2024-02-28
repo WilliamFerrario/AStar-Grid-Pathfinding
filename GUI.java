@@ -17,6 +17,7 @@ public class GUI extends JFrame {
         MouseEvents mouseEvents = new MouseEvents(paint.grid);
         paint.addMouseListener(mouseEvents);
         paint.addMouseMotionListener(mouseEvents);
+        paint.addMouseWheelListener(mouseEvents);
 
     }
 }

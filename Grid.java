@@ -16,6 +16,10 @@ public class Grid {
     int verticalMargin = 12;
     int rightMargin = 15;
 
+    // Initialize mouse Cursor size and radius
+    public int cursorSize = 1;
+    public int radius;
+
     //Selector Values
     public boolean sizeSelectorHovered = false;
     public int sizeSelectorValue = 110;
@@ -102,27 +106,8 @@ public class Grid {
         gameBoard[x][y] = type;
     }
 
-    // One cell wall on left click
+    // Click to place cell/s
     public void updateBoard(int x, int y) {
-        if (x == -1 || y == -1)
-            return;
-
-        if (startPressed || goalPressed) {
-            setBoard(x, y, startPressed ? 2 : 3);
-            startPressed = false;
-            goalPressed = false;
-        } else {
-            if (erasePressed){
-                setBoard(x, y, 0);
-            }
-            else{
-                setBoard(x, y, 1);
-            }
-        }
-    }
-
-    // On right click, place thicker walls
-    public void thickWall(int x, int y) {
         if (x == -1 || y == -1)
             return;
     
@@ -131,22 +116,25 @@ public class Grid {
             startPressed = false;
             goalPressed = false;
         } else {
-            // Calculate the radius of the square from Grid size
-            int radius = Math.min(rows, cols) / 60;
-            
-            // Place walls in a square formation around clicked cell
+            // Calculate the radius of the circular pattern from Grid size
+            radius = cursorSize / 2;
+    
+            // Place walls in a circular pattern around clicked cell
             for (int i = -radius; i <= radius; i++) {
                 for (int j = -radius; j <= radius; j++) {
-                    int newX = x + i;
-                    int newY = y + j;
-                    
-                    // Ensure cells are within bounds
-                    if (newX >= 0 && newX < rows && newY >= 0 && newY < cols) {
-                        if (erasePressed){
-                            setBoard(newX, newY, 0);
-                        }
-                        else{
-                            setBoard(newX, newY, 1); // Place wall
+                    // Check if the cell falls within the circular pattern
+                    if (i * i + j * j <= radius * radius) {
+                        int newX = x + i;
+                        int newY = y + j;
+    
+                        // Ensure cells are within bounds
+                        if (newX >= 0 && newX < rows && newY >= 0 && newY < cols) {
+                            if (erasePressed){
+                                setBoard(newX, newY, 0);
+                            }
+                            else{
+                                setBoard(newX, newY, 1); // Place wall
+                            }
                         }
                     }
                 }
@@ -209,10 +197,6 @@ public class Grid {
         this.leftMargin = buttonAreaWidth + 15; // width to start drawing squares
         this.verticalMargin = 12;
         this.rightMargin = 15;
-
-        // this.searchSpeed = searchSpeed / 5;
-        // this.pathSpeed = pathSpeed / 5;
-
 
         // Calculate Available Grid Area
         this.availableWidth = frameWidth - leftMargin - rightMargin;

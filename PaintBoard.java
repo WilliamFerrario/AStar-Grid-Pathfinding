@@ -225,9 +225,6 @@ public class PaintBoard extends JPanel {
                 // Paint wall cells as a wall, darker if hovered
                 if (grid.gameBoard[i][j] == 1) {
                     g.setColor(mutedRed);
-                    // if ((i == grid.cellHoveredX && j == grid.cellHoveredY) && !grid.goalPressed && !grid.startPressed) {
-                    //     g.setColor(fgDark);
-                    // }
                 }
 
                 // If erase pressed, change cell color

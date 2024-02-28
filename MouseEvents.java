@@ -1,7 +1,8 @@
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
+
 import javax.swing.event.MouseInputListener;
 
-public class MouseEvents implements MouseInputListener {
+public class MouseEvents implements MouseInputListener, MouseWheelListener {
     private Grid grid;
 
     // Mouse events to communicate with grid
@@ -18,7 +19,7 @@ public class MouseEvents implements MouseInputListener {
     public int searchSpeed;
     public int pathSpeed;
     public boolean mouseDown;
-    public boolean rightMouseDown;
+    //public boolean rightMouseDown;
     public int mod;
 
     @Override
@@ -31,10 +32,6 @@ public class MouseEvents implements MouseInputListener {
         // Update Cell on grid
         if (mouseCellX != -1 || mouseCellY != -1) {
             grid.updateBoard(mouseCellX, mouseCellY);
-        }
-
-        if (e.getButton() == MouseEvent.BUTTON3 && (mouseCellX != -1 || mouseCellY != -1)) {
-            grid.thickWall(mouseCellX, mouseCellY);
         }
 
         // execute button press
@@ -197,18 +194,18 @@ public class MouseEvents implements MouseInputListener {
     public void mousePressed(MouseEvent e) {
         mouseDown = true;
 
-        if (e.getButton() == MouseEvent.BUTTON3){
-            rightMouseDown = true;
-        }
+        // if (e.getButton() == MouseEvent.BUTTON3){
+        //     rightMouseDown = true;
+        // }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
         mouseDown = false;
 
-        if (e.getButton() == MouseEvent.BUTTON3){
-            rightMouseDown = false;
-        }
+        // if (e.getButton() == MouseEvent.BUTTON3){
+        //     rightMouseDown = false;
+        // }
     }
 
     @Override
@@ -228,13 +225,7 @@ public class MouseEvents implements MouseInputListener {
 
                 // Drag to change values of cells opposite of initial click
                 if (val != grid.getBoardVal(mouseCellX, mouseCellY)) {
-
-                    if (rightMouseDown){ // Larger Walls
-                        grid.thickWall(mouseCellX, mouseCellY);
-                    }
-                    else{ // Smaller Walls
-                        grid.updateBoard(mouseCellX, mouseCellY);
-                    }
+                    grid.updateBoard(mouseCellX, mouseCellY);
                 }
             }
         }
@@ -294,6 +285,25 @@ public class MouseEvents implements MouseInputListener {
         }
 
     }
+
+    @Override
+    public void mouseWheelMoved(MouseWheelEvent e) {
+        int rotation = e.getWheelRotation();
+        grid.cursorSize = Math.max(grid.cursorSize, 1);
+        grid.cursorSize = Math.min(grid.cursorSize, 14);
+
+        // If wheel goes up
+        if (rotation < 0){
+            grid.cursorSize ++;
+        }
+        // If wheel goes down
+        if (rotation > 0){
+            grid.cursorSize --;
+        }
+
+        System.out.println(grid.cursorSize);
+    }
+
 
     @Override
     public void mouseEntered(MouseEvent e) {
