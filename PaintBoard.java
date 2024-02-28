@@ -192,6 +192,22 @@ public class PaintBoard extends JPanel {
         String pathSpeedText = "Path Speed: " + grid.pathSpeedValue; // Get actual value of path speed selector
         g.drawString(pathSpeedText, 15 + (212 / 2) - (g.getFontMetrics().stringWidth(pathSpeedText) / 2), 540);
 
+        // Erase button
+        g.setColor(fgDark);
+        g.fillRect(15, 562, 65, 60); // Adjust position as needed
+        if (grid.eraseHovered) {
+            g.setColor(hoveredDark);
+            g.fillRect(15, 562, 65, 60); // Adjust position as needed
+        }
+        if (grid.erasePressed) {
+            g.setColor(mutedRed);
+            g.fillRect(15, 562, 65, 60); // Adjust position as needed
+            g.setColor(hoveredDark);
+        }
+
+        // Erase Text
+        g.setColor(Color.WHITE); // Set text color
+        g.drawString("Erase", 15 + (65 / 2) - (g.getFontMetrics().stringWidth("Erase") / 2), 562 + (60 / 2) + (g.getFontMetrics().getAscent() / 2) - 3);
 
         // Draw Cells
         for (int i = 0; i < grid.cols; i++) {
@@ -209,9 +225,14 @@ public class PaintBoard extends JPanel {
                 // Paint wall cells as a wall, darker if hovered
                 if (grid.gameBoard[i][j] == 1) {
                     g.setColor(mutedRed);
-                    if ((i == grid.cellHoveredX && j == grid.cellHoveredY) && !grid.goalPressed && !grid.startPressed) {
-                        // g.setColor(fgDark);
-                    }
+                    // if ((i == grid.cellHoveredX && j == grid.cellHoveredY) && !grid.goalPressed && !grid.startPressed) {
+                    //     g.setColor(fgDark);
+                    // }
+                }
+
+                // If erase pressed, change cell color
+                if ((i == grid.cellHoveredX && j == grid.cellHoveredY) && !grid.goalPressed && !grid.startPressed && grid.erasePressed) {
+                    g.setColor(Color.gray);
                 }
 
                 // Paint Start State if 2, if button is selected paint that square before

@@ -70,6 +70,8 @@ public class Grid {
     public boolean goalPressed = false;
     public boolean goalHovered = false;
     public boolean resetHovered = false;
+    public boolean erasePressed = false;
+    public boolean eraseHovered = false;
 
     //Algo Buttons
     public boolean BFSPressed = false;
@@ -78,7 +80,7 @@ public class Grid {
     public boolean DPressed = false;
     public boolean DHovered = false;
 
-    public boolean AstarPressed = false;
+    public boolean AstarPressed = true;
     public boolean AstarHovered = false;
     
     public int cellHoveredX;
@@ -100,6 +102,7 @@ public class Grid {
         gameBoard[x][y] = type;
     }
 
+    // One cell wall on left click
     public void updateBoard(int x, int y) {
         if (x == -1 || y == -1)
             return;
@@ -109,12 +112,46 @@ public class Grid {
             startPressed = false;
             goalPressed = false;
         } else {
-            toggleWall(x, y);
+            if (erasePressed){
+                setBoard(x, y, 0);
+            }
+            else{
+                setBoard(x, y, 1);
+            }
         }
     }
 
-    private void toggleWall(int x, int y) {
-        setBoard(x, y, gameBoard[x][y] == 0 ? 1 : 0);
+    // On right click, place thicker walls
+    public void thickWall(int x, int y) {
+        if (x == -1 || y == -1)
+            return;
+    
+        if (startPressed || goalPressed) {
+            setBoard(x, y, startPressed ? 2 : 3);
+            startPressed = false;
+            goalPressed = false;
+        } else {
+            // Calculate the radius of the square from Grid size
+            int radius = Math.min(rows, cols) / 60;
+            
+            // Place walls in a square formation around clicked cell
+            for (int i = -radius; i <= radius; i++) {
+                for (int j = -radius; j <= radius; j++) {
+                    int newX = x + i;
+                    int newY = y + j;
+                    
+                    // Ensure cells are within bounds
+                    if (newX >= 0 && newX < rows && newY >= 0 && newY < cols) {
+                        if (erasePressed){
+                            setBoard(newX, newY, 0);
+                        }
+                        else{
+                            setBoard(newX, newY, 1); // Place wall
+                        }
+                    }
+                }
+            }
+        }
     }
 
     public void execute() {
